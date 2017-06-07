@@ -5,5 +5,15 @@
         <file>Image/background.gif</file>
         <file>Image/bullet.png</file>
         <file>Image/Enemy.png</file>
+        <file>Image/Number/0.png</file>
+        <file>Image/Number/1.png</file>
+        <file>Image/Number/2.png</file>
+        <file>Image/Number/3.png</file>
+        <file>Image/Number/4.png</file>
+        <file>Image/Number/5.png</file>
+        <file>Image/Number/6.png</file>
+        <file>Image/Number/7.png</file>
+        <file>Image/Number/8.png</file>
+        <file>Image/Number/9.png</file>
     </qresource>
 </RCC>

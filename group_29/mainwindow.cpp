@@ -8,6 +8,7 @@
 QSet<int> pressedKeys;
 
 int i = 0;
+int j = 0;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,13 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
     player=new ROLE(this);
     playerTimer = new QTimer(this);
     connect(playerTimer, SIGNAL(timeout()), this, SLOT());
-    playerTimer->start(100);
+    playerTimer->start(50);
 
     //create enemy
     enemy=new Enemy(this);
     enemyTimer = new QTimer(this);
-    connect(enemyTimer, SIGNAL(timeout()), this, SLOT());
-    enemyTimer->start(100);
+    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
+    enemyTimer->start(50);
 
 
     //create my bullet
@@ -39,13 +40,24 @@ MainWindow::MainWindow(QWidget *parent)
     connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
     bulletTimer->start(2);
 
+    //create enemy bullet
+    int j;
+    for(j=0;j<24;j++) enemy_bullet[j]=new enemybullet(this);
+    enemybulletTimer = new QTimer(this);
+    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT());
+    enemybulletTimer->start(2);
+
     //Music
     bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
     jump_sound = new easyMusic("musicFile/jumpSound.mp3",100,0);
     hit_music = new easyMusic("musicFile/sfx_hit.wav",100,0);
+    DeathTheme = new easyMusic("musicFile/DeathTheme.mp3",100,1);
+    VictoryTheme = new easyMusic("musicFile/VictoryTheme.mp3",100,1);
 
     //遊戲初始模式
     gameRedy();
+
+
 
     //遊戲開始
     gameStart();
@@ -97,7 +109,7 @@ void MainWindow::createPlayer(){
 
     player->move(0,0);
     playerTimer=new QTimer(this);
-    connect(playerTimer,SIGNAL(timeout()),this,SLOT(playerAction()));
+    connect(playerTimer,SIGNAL(timeout()),this,SLOT());
     timedata=8;
 }
 
@@ -135,9 +147,18 @@ void MainWindow::mybulletAction()
 }
 
 
-void MainWindow::playerAction()
+void MainWindow::enemyAction()
 {
+    if(enemy->pos().x() > player->pos().x()) enemy->move(enemy->pos().x()-20,enemy->pos().y());
+    if(enemy->pos().x() < player->pos().x()) enemy->move(enemy->pos().x()+20,enemy->pos().y());
 
+}
+
+void MainWindow::enemyShoot()
+{
+    enemy_bullet[j]->move(enemy_bullet[j]->pos().x(),enemy_bullet[j]->pos().y()+40);
+    j++;
+    if(j==24) j = 0;
 }
 
 void MainWindow::collisDete()
@@ -153,10 +174,20 @@ void MainWindow::gameRedy()
 void MainWindow::gameLose()
 {
     gamemod=lose;
+    DeathTheme->play();
 }
 void MainWindow::gameStart()
 {
     gamemod=start;
     playerTimer->start(timedata);
     bgm->play();
+    time = new Number(this);
+    timetimer = new QTimer(this);
+    connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
+    timetimer->start(1000);
+}
+
+void MainWindow::countdown()
+{
+    time->TimeLimit--;
 }

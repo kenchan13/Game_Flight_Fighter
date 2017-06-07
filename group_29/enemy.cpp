@@ -22,5 +22,5 @@ void Enemy::paintEvent(QPaintEvent *)
     QPixmap pix;
 
     pix.load(enemyImg);
-    painter.drawPixmap(205,25,313,161,pix);
+    painter.drawPixmap(240,25,250,129,pix);
 }
