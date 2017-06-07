@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <role.h>
 #include <mybullet.h>
+#include <enemy.h>
 #include "easymusic.h"
 
 class MainWindow : public QMainWindow
@@ -49,6 +50,9 @@ private:
 
     mybullet *bullet[24];
     QTimer *bulletTimer;
+
+    Enemy *enemy;
+    QTimer *enemyTimer;
 };
 
 #endif // MAINWINDOW_H
