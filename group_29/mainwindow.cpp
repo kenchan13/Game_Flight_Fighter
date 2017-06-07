@@ -22,10 +22,17 @@ MainWindow::MainWindow(QWidget *parent)
     //create player
     player=new ROLE(this);
     playerTimer = new QTimer(this);
-
-    connect(playerTimer, SIGNAL(timeout()), this, SLOT(playerAction()));
+    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
     playerTimer->start(100);
 
+    //create enemy
+    enemy=new Enemy(this);
+    enemyTimer = new QTimer(this);
+    connect(enemyTimer, SIGNAL(timeout()), this, SLOT());
+    enemyTimer->start(100);
+
+
+    //create my bullet
     int i;
     for(i=0;i<24;i++) bullet[i]=new mybullet(this);
     bulletTimer = new QTimer(this);
