@@ -37,5 +37,5 @@ void Number::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.drawPixmap(733,860,24,36,pix[TimeLimit%10]);
     painter.drawPixmap(708,860,24,36,pix[TimeLimit/10%10]);
-    painter.drawPixmap(683,860,24,36,pix[TimeLimit/100%10]);
+    painter.drawPixmap(683,860,24,36,pix[TimeLimit/100]);
 }
