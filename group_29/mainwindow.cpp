@@ -11,6 +11,38 @@ using namespace std;
 QSet<int> pressedKeys;
 
 int i = 0;
+int gameListStatus = 0;
+
+
+void MainWindow::paintEvent(QPaintEvent *)		//繪圖事件, 用来產生背景
+{
+    // 可以在這裡新增背景圖片
+    QPainter painter(this);
+    QPixmap bgImg;
+    QPixmap start, start_selected, exit, exit_selected, score, score_selected;
+    bgImg.load(":/Image/background.gif");
+    painter.drawPixmap(0, 0, 760, 900, bgImg);
+    cout << "paintEvent" << endl;
+    if (gameListStatus == 0) {
+        QPainter painter(this);
+        QPixmap bgImg;
+        bgImg.load(":/Image/background.gif");
+        painter.drawPixmap(0, 0, 760, 900, bgImg);
+
+        QPixmap start, start_selected, exit, exit_selected, score, score_selected;
+        start.load(":/Image/start_selected.png");
+        start_selected.load(":/Image/start_selected.png");
+        exit.load(":/Image/exit_selected.png");
+        exit_selected.load(":/Image/exit_selected.png");
+        score.load(":/Image/score_selected.png");
+        score_selected.load(":/Image/score_selected.png");
+
+        painter.drawPixmap(100, 300, 400, 100, start);
+        painter.drawPixmap(100, 400, 400, 100, score);
+        painter.drawPixmap(100, 500, 400, 100, exit);
+    }
+}
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,64 +53,41 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(":/Image/player1.png"));
     this->setWindowTitle("Fight Flighter");
 
+    //create player
+    cout << "create player" << endl;
 
-//    //create player
-//    player=new ROLE(this);
-//    playerTimer = new QTimer(this);
+    if (gameListStatus == 1) { // Game Start
+        //create player
+        cout << "if gameListStatus == 1" << endl;
+        player=new ROLE(this);
+        playerTimer = new QTimer(this);
 
-//    connect(playerTimer, SIGNAL(timeout()), this, SLOT(playerAction()));
-//    playerTimer->start(100);
+        connect(playerTimer, SIGNAL(timeout()), this, SLOT(playerAction()));
+        playerTimer->start(100);
 
-//    int i;
-//    for(i=0;i<24;i++) bullet[i]=new mybullet(this);
-//    bulletTimer = new QTimer(this);
-//    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
-//    bulletTimer->start(2);
+        int i;
+        for(i=0;i<24;i++) bullet[i]=new mybullet(this);
+        bulletTimer = new QTimer(this);
+        connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
+        bulletTimer->start(2);
 
-    //Music
-    bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
-    jump_sound = new easyMusic("musicFile/jumpSound.mp3",100,0);
-    hit_music = new easyMusic("musicFile/sfx_hit.wav",100,0);
+        //Music
+        bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
+        jump_sound = new easyMusic("musicFile/jumpSound.mp3",100,0);
+        hit_music = new easyMusic("musicFile/sfx_hit.wav",100,0);
 
-    //主選單
-    gameList();
+        //主選單
 
-    //遊戲初始模式
-    //gameRedy();
+        //遊戲初始模式
+        gameRedy();
 
-    //遊戲開始
-    //gameStart();
-}
-
-
-void MainWindow::paintEvent(QPaintEvent *)		//繪圖事件, 用来產生背景
-{
-    // 可以在這裡新增背景圖片
-
-//    QPainter painter(this);
-//    QPixmap bgImg;
-//    bgImg.load(":/Image/background.gif");
-
-//    painter.drawPixmap(0, 0, 760, 900, bgImg);
-
-    QPainter painter(this);
-    QPixmap start, start_selected, exit, exit_selected, score, score_selected;
-    start.load(":/Image/start_selected.png");
-    start_selected.load(":/Image/start_selected.png");
-    exit.load(":/Image/exit_selected.png");
-    exit_selected.load(":/Image/exit_selected.png");
-    score.load(":/Image/score_selected.png");
-    score_selected.load(":/Image/score_selected.png");
-
-    painter.drawPixmap(100, 300, 400, 100, start);
-    painter.drawPixmap(100, 400, 400, 100, score);
-    painter.drawPixmap(100, 500, 400, 100, exit);
-}
-
-void MainWindow::gameList()
-{
+        //遊戲開始
+        gameStart();
+    }
 
 }
+
+
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -108,20 +117,26 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        auto startPoint = event->pos();
-        if (100 <= startPoint.rx() && startPoint.rx() <= 500) {
-            if (300 <= startPoint.ry() && startPoint.ry() < 400) {
-                cout << "start" << endl;
-            } else if (400 <= startPoint.ry() && startPoint.ry() < 500) {
-                cout << "score" << endl;
-            } else if (500 <= startPoint.ry() && startPoint.ry() < 600) {
-                cout << "exit" << endl;
+    if (gameListStatus == 0) { //Game List Mouse Action
+        if (event->button() == Qt::LeftButton) {
+            auto startPoint = event->pos();
+            if (100 <= startPoint.rx() && startPoint.rx() <= 500) { //Start
+                if (300 <= startPoint.ry() && startPoint.ry() < 400) {
+                    gameListStatus = 1;
+                    cout << "start" << endl;
+                } else if (400 <= startPoint.ry() && startPoint.ry() < 500) { //Score
+                    cout << "score" << endl;
+                    gameListStatus = 2;
+                } else if (500 <= startPoint.ry() && startPoint.ry() < 600) { //Exit
+                    cout << "exit" << endl;
+                    gameListStatus = 3;
+                }
             }
         }
 
     }
-    //MainWindow::mousePressEvent(event);
+
+
 }
 
 

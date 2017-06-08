@@ -25,7 +25,7 @@ private slots:
     void collisDete();			//碰撞偵測
     void mybulletAction();
 private:
-    void gameList();             //主選單
+//    void gameList();             //主選單
     void createPlayer();          // 產生角色
     void gameLose();			 //遊戲結束
     void gameStart();			 //遊戲開始
