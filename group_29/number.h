@@ -13,7 +13,7 @@ class Number : public QWidget
 public:
     explicit Number(QWidget *parent = 0);
     ~Number();
-    int TimeLimit = 300;
+    int TimeLimit = 180;
     QPixmap pix[10];
 protected:
     void paintEvent(QPaintEvent *);

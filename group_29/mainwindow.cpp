@@ -7,6 +7,9 @@
 #include <QDialog>
 QSet<int> pressedKeys;
 
+#include <iostream>
+using namespace std;
+
 int i = 0;
 int j = 0;
 
@@ -44,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     int j;
     for(j=0;j<24;j++) enemy_bullet[j]=new enemybullet(this);
     enemybulletTimer = new QTimer(this);
-    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT());
+    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
     enemybulletTimer->start(2);
 
     //Music
@@ -151,21 +154,24 @@ void MainWindow::enemyAction()
 {
     if(enemy->pos().x() > player->pos().x()) enemy->move(enemy->pos().x()-20,enemy->pos().y());
     if(enemy->pos().x() < player->pos().x()) enemy->move(enemy->pos().x()+20,enemy->pos().y());
-
 }
 
 void MainWindow::enemyShoot()
 {
-    enemy_bullet[j]->move(enemy_bullet[j]->pos().x(),enemy_bullet[j]->pos().y()+40);
+    if(gamemod!=lose) enemy_bullet[j++]->move(enemy->pos().x()-405,enemy->pos().y()+150);
+    if(j==24) j = 0;
+}
+
+void MainWindow::enemybulletAction()
+{
+    if(enemy_bullet[j]->pos().y() < 1000) enemy_bullet[j]->move(enemy_bullet[j]->pos().x(),enemy_bullet[j]->pos().y()+50);
+
+    cout << enemy_bullet[j]->pos().y() << endl;
     j++;
     if(j==24) j = 0;
 }
 
-void MainWindow::collisDete()
-{
-    //水管碰撞偵測
 
-}
 void MainWindow::gameRedy()
 {
     gamemod=redy;
@@ -174,13 +180,14 @@ void MainWindow::gameRedy()
 void MainWindow::gameLose()
 {
     gamemod=lose;
+    timetimer->stop();
     DeathTheme->play();
 }
 void MainWindow::gameStart()
 {
     gamemod=start;
     playerTimer->start(timedata);
-    bgm->play();
+    //bgm->play();
     time = new Number(this);
     timetimer = new QTimer(this);
     connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
@@ -190,4 +197,5 @@ void MainWindow::gameStart()
 void MainWindow::countdown()
 {
     time->TimeLimit--;
+    enemyShoot();
 }
