@@ -6,7 +6,6 @@
 #include <QMouseEvent>
 #include <role.h>
 #include <mybullet.h>
-#include <enemy.h>
 #include "easymusic.h"
 
 class MainWindow : public QMainWindow
@@ -26,7 +25,7 @@ private slots:
     void collisDete();			//碰撞偵測
     void mybulletAction();
 private:
-
+    void gameList();             //主選單
     void createPlayer();          // 產生角色
     void gameLose();			 //遊戲結束
     void gameStart();			 //遊戲開始
@@ -50,9 +49,6 @@ private:
 
     mybullet *bullet[24];
     QTimer *bulletTimer;
-
-    Enemy *enemy;
-    QTimer *enemyTimer;
 };
 
 #endif // MAINWINDOW_H

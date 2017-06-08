@@ -4,6 +4,11 @@
         <file>Image/role.png</file>
         <file>Image/background.gif</file>
         <file>Image/bullet.png</file>
-        <file>Image/Enemy.png</file>
+        <file>Image/exit.png</file>
+        <file>Image/exit_selected.png</file>
+        <file>Image/score.png</file>
+        <file>Image/score_selected.png</file>
+        <file>Image/start.png</file>
+        <file>Image/start_selected.png</file>
     </qresource>
 </RCC>

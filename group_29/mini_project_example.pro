@@ -18,14 +18,12 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     role.cpp \
     easymusic.cpp \
-    mybullet.cpp \
-    enemy.cpp
+    mybullet.cpp
 
 HEADERS  += mainwindow.h \
     role.h \
     easymusic.h \
-    mybullet.h \
-    enemy.h
+    mybullet.h
 
 RESOURCES += \
     resource.qrc
