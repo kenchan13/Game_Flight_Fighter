@@ -1,0 +1,17 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\role.o
+./debug\easymusic.o
+./debug\mybullet.o
+./debug\enemy.o
+./debug\enemybullet.o
+./debug\number.o
+./debug\qrc_resource.o
+./debug\moc_mainwindow.o
+./debug\moc_role.o
+./debug\moc_mybullet.o
+./debug\moc_enemy.o
+./debug\moc_enemybullet.o
+./debug\moc_number.o
+);

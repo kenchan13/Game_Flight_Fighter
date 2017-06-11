@@ -24,31 +24,31 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //create player
-    player=new ROLE(this);
-    playerTimer = new QTimer(this);
-    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
-    playerTimer->start(50);
+//    player=new ROLE(this);
+//    playerTimer = new QTimer(this);
+//    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
+//    playerTimer->start(50);
 
     //create enemy
-    enemy=new Enemy(this);
-    enemyTimer = new QTimer(this);
-    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
-    enemyTimer->start(50);
+//    enemy=new Enemy(this);
+//    enemyTimer = new QTimer(this);
+//    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
+//    enemyTimer->start(50);
 
 
     //create my bullet
-    int i;
-    for(i=0;i<24;i++) bullet[i]=new mybullet(this);
-    bulletTimer = new QTimer(this);
-    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
-    bulletTimer->start(2);
+//    int i;
+//    for(i=0;i<24;i++) bullet[i]=new mybullet(this);
+//    bulletTimer = new QTimer(this);
+//    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
+//    bulletTimer->start(2);
 
     //create enemy bullet
-    int j;
-    for(j=0;j<24;j++) enemy_bullet[j]=new enemybullet(this);
-    enemybulletTimer = new QTimer(this);
-    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
-    enemybulletTimer->start(2);
+//    int j;
+//    for(j=0;j<24;j++) enemy_bullet[j]=new enemybullet(this);
+//    enemybulletTimer = new QTimer(this);
+//    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
+//    enemybulletTimer->start(2);
 
     //Music
     bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
@@ -110,10 +110,38 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
 void MainWindow::createPlayer(){
 
+    player=new ROLE(this);
+    playerTimer = new QTimer(this);
+    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
+    playerTimer->start(50);
+
     player->move(0,0);
     playerTimer=new QTimer(this);
     connect(playerTimer,SIGNAL(timeout()),this,SLOT());
     timedata=8;
+}
+
+void MainWindow::createEnemy(){
+    enemy=new Enemy(this);
+    enemyTimer = new QTimer(this);
+    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
+    enemyTimer->start(50);
+}
+
+void MainWindow::createMyBullet(){
+    int i;
+    for(i=0;i<24;i++) bullet[i]=new mybullet(this);
+    bulletTimer = new QTimer(this);
+    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
+    bulletTimer->start(2);
+}
+
+void MainWindow::createEnemyBullet(){
+    int j;
+    for(j=0;j<24;j++) enemy_bullet[j]=new enemybullet(this);
+    enemybulletTimer = new QTimer(this);
+    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
+    enemybulletTimer->start(2);
 }
 
 void MainWindow::moving(char cmd)
@@ -176,13 +204,18 @@ void MainWindow::gameRedy()
 {
     gamemod=redy;
     createPlayer();
+    createEnemy();
+    createMyBullet();
+    createEnemyBullet();
 }
+
 void MainWindow::gameLose()
 {
     gamemod=lose;
     timetimer->stop();
     DeathTheme->play();
 }
+
 void MainWindow::gameStart()
 {
     gamemod=start;

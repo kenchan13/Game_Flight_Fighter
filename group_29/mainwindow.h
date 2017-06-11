@@ -31,6 +31,9 @@ private slots:
 private:
 
     void createPlayer();          // 產生角色
+    void createEnemy();          //產生敵人
+    void createMyBullet();
+    void createEnemyBullet();
     void gameLose();			 //遊戲結束
     void gameStart();			 //遊戲開始
     void gameRedy();             //遊戲預備
