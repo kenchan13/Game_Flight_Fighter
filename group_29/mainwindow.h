@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = 0);
+    void gameInit();
 
 protected:
     void paintEvent(QPaintEvent *);    //繪製背景圖
@@ -46,7 +47,8 @@ private:
     void moving(char);
     void myshoot();
 
-    void createBackground();
+    //void createBackground();
+    void openingMovie();
     void fighterAction();
     void createLoseMovie();
 

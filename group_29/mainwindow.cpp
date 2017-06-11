@@ -10,7 +10,7 @@ using namespace std;
 
 int i = 0;
 int j = 0;
-
+int gameListStatus = -1;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -20,11 +20,25 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(":/Image/Kappa.png"));
     this->setWindowTitle("Fight Flighter");
 
+    //Music
+    bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
+    jump_sound = new easyMusic("musicFile/jumpSound.mp3",100,0);
+    hit_music = new easyMusic("musicFile/sfx_hit.wav",100,0);
+    DeathTheme = new easyMusic("musicFile/DeathTheme.mp3",100,1);
+    VictoryTheme = new easyMusic("musicFile/VictoryTheme.mp3",100,0);
+
+    openingMovie();
+}
+
+void MainWindow::gameInit()
+{
     //create player
     player=new ROLE(this);
+    player->setVisible(false);
 
     //create enemy
     enemy=new Enemy(this);
+    enemy->setVisible(false);
 
     //create my bullet
     for(int i=0;i<24;i++) bullet[i]=new mybullet(this);
@@ -39,14 +53,6 @@ MainWindow::MainWindow(QWidget *parent)
         enemy_bullet[j]=new enemybullet(this);
         enemy_bullet[j]->setVisible(false);
     }
-
-    //Music
-    bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
-    jump_sound = new easyMusic("musicFile/jumpSound.mp3",100,0);
-    hit_music = new easyMusic("musicFile/sfx_hit.wav",100,0);
-    DeathTheme = new easyMusic("musicFile/DeathTheme.mp3",100,1);
-    VictoryTheme = new easyMusic("musicFile/VictoryTheme.mp3",100,0);
-
     time = new Number(this);
     timetimer = new QTimer(this);
     connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
@@ -56,15 +62,11 @@ MainWindow::MainWindow(QWidget *parent)
     doomTimer = new QTimer(this);
     connect(doomTimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
 
-
-    //createBackground();
     createLoseMovie();
     loselabel->setVisible(false);
 
     //遊戲初始模式
     gameRedy();
-
-
 
     //遊戲開始
     gameStart();
@@ -77,8 +79,19 @@ void MainWindow::paintEvent(QPaintEvent *)		//繪圖事件, 用来產生背景
     QPainter painter(this);
     QPixmap bgImg;
     bgImg.load(":/Image/background.gif");
-
     painter.drawPixmap(0, 0, 760, 900, bgImg);
+
+    if (gameListStatus == 0) {
+        QPixmap start, start_selected, exit, exit_selected, score, score_selected;
+        start.load(":/Image/start_selected.png");
+        exit.load(":/Image/exit_selected.png");
+        score.load(":/Image/score_selected.png");
+
+        painter.drawPixmap(100, 300, 400, 100, start);
+        painter.drawPixmap(100, 400, 400, 100, score);
+        painter.drawPixmap(100, 500, 400, 100, exit);
+}
+
 }
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -109,12 +122,31 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     // 在這裡設定按下滑鼠要觸發的功能
+    if (gameListStatus == 0) { //Game List Mouse Action
+        if (event->button() == Qt::LeftButton) {
+            auto startPoint = event->pos();
+            if (100 <= startPoint.rx() && startPoint.rx() <= 500) { //Start
+                if (300 <= startPoint.ry() && startPoint.ry() < 400) {
+                    gameListStatus = 1;
+                    cout << "start" << endl;
+                    gameInit();
+                } else if (400 <= startPoint.ry() && startPoint.ry() < 500) { //Score
+                    cout << "score" << endl;
+                    gameListStatus = 2;
+                } else if (500 <= startPoint.ry() && startPoint.ry() < 600) { //Exit
+                    cout << "exit" << endl;
+                    gameListStatus = 3;
+                    QApplication::quit();
+                }
+            }
+        }
+    }
 }
 
 
 void MainWindow::createPlayer(){
-
     player->move(320,750);
+    player->setVisible(true);
     playerTimer=new QTimer(this);
     //connect(playerTimer,SIGNAL(timeout()),this,SLOT());
     timedata=8;
@@ -123,6 +155,7 @@ void MainWindow::createPlayer(){
 void MainWindow::createEnemy()
 {
     enemy->move(240,25);
+    enemy->setVisible(true);
     enemyTimer = new QTimer(this);
     connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
 }
@@ -225,6 +258,7 @@ void MainWindow::gameRedy()
     createPlayer();
     createEnemy();
     createEnemyBullet();
+    repaint();
 }
 void MainWindow::gameLose()
 {
@@ -271,7 +305,7 @@ void MainWindow::countdown()
     }
 }
 
-void MainWindow::createBackground()
+void MainWindow::openingMovie()
 
 {
 
@@ -292,7 +326,7 @@ void MainWindow::bgmoviestop()
 {
     bgmovie->stop();
     bglabel->setVisible(false);
-
+    if (gameListStatus == -1 )gameListStatus = 0;
 }
 
 void MainWindow::createLoseMovie()
