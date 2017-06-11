@@ -37,10 +37,15 @@ MainWindow::MainWindow(QWidget *parent)
     for(int i=0;i<24;i++) bullet[i]=new mybullet(this);
     bulletTimer = new QTimer(this);
     connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
+    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletHit()));
     bulletTimer->start(2);
 
     //create enemy bullet
-    for(int j=0;j<8;j++) enemy_bullet[j]=new enemybullet(this);
+    for(int j=0;j<8;j++)
+    {
+        enemy_bullet[j]=new enemybullet(this);
+        enemy_bullet[j]->setVisible(false);
+    }
     /*enemybulletTimer = new QTimer(this);
     connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
     enemybulletTimer->start(2);*/
@@ -50,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     jump_sound = new easyMusic("musicFile/jumpSound.mp3",100,0);
     hit_music = new easyMusic("musicFile/sfx_hit.wav",100,0);
     DeathTheme = new easyMusic("musicFile/DeathTheme.mp3",100,1);
-    VictoryTheme = new easyMusic("musicFile/VictoryTheme.mp3",100,1);
+    VictoryTheme = new easyMusic("musicFile/VictoryTheme.mp3",100,0);
 
     //遊戲初始模式
     gameRedy();
@@ -76,24 +81,24 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     // 在這裡設定按下鍵盤要觸發的功能
     if(event->key()==Qt::Key_Left)
     {
-        if(gamemod!=lose) moving('L');
+        if(gamemod==start) moving('L');
     }
     if(event->key()==Qt::Key_Right)
     {
-        if(gamemod!=lose) moving('R');
+        if(gamemod==start) moving('R');
     }
     if(event->key()==Qt::Key_Up)
     {
-        if(gamemod!=lose) moving('U');
+        if(gamemod==start) moving('U');
     }
     if(event->key()==Qt::Key_Down)
     {
-        if(gamemod!=lose) moving('D');
+        if(gamemod==start) moving('D');
     }
     // shooting
     if(event->key()==Qt::Key_Space)
     {
-        if(gamemod!=lose) myshoot();
+        if(gamemod==start) myshoot();
     }
 
 }
@@ -121,7 +126,6 @@ void MainWindow::createEnemy()
 void MainWindow::createEnemyBullet()
 {
     enemybulletTimer = new QTimer(this);
-    //connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
     connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
     connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletCollision()));
 }
@@ -148,17 +152,39 @@ void MainWindow::moving(char cmd)
 
 void MainWindow::myshoot()
 {
-    bullet[i++]->move(player->pos().x()+37,player->pos().y()-15);
+    bullet[i]->move(player->pos().x()+37,player->pos().y()-15);
+    bullet[i]->setVisible(true);
+    i++;
     if(i==24) i=0;
 }
 
 void MainWindow::mybulletAction()
 {
-    bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-40);
+    /*bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-40);
     i++;
-    if(i==24) i = 0;
+    if(i==24) i = 0;*/
+    for(int i=0;i<24;i++)
+    {
+        if(bullet[i]->pos().y()>-100) bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-2);
+    }
 }
 
+void MainWindow::mybulletHit()
+{
+    for(int i=0;i<24;i++)
+    {
+        if(enemy->pos().x() < bullet[i]->pos().x() && enemy->pos().x()+250 > bullet[i]->pos().x())
+        {
+            if(enemy->pos().y() <= bullet[i]->pos().y() && enemy->pos().y()+129 >= bullet[i]->pos().y())
+            {
+                bullet[i]->setVisible(false);
+                bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-160);
+                enemy->HP--;
+                if(enemy->HP==0) gameVictory();
+            }
+        }
+    }
+}
 
 void MainWindow::enemyAction()
 {
@@ -170,10 +196,6 @@ void MainWindow::enemyShoot()
 {
     enemy_bullet[j++]->move(enemy->pos().x()+115,enemy->pos().y()+125);
     if(j==8) j = 0;
-    /*for(int i=0;i<24;i++)
-    {
-        enemy_bullet[i]->move(enemy->pos().x(),enemy->pos().y());
-    }*/
 }
 
 void MainWindow::enemybulletAction()
@@ -182,27 +204,13 @@ void MainWindow::enemybulletAction()
     {
         if(enemy_bullet[i]->pos().y()<1200) enemy_bullet[i]->move(enemy_bullet[i]->pos().x(),enemy_bullet[i]->pos().y()+2);
     }
-
-    //enemy_bullet[j]->move(enemy_bullet[j]->pos().x(),enemy_bullet[j]->pos().y()+50);
-
-    /*collideDetection
-    if(player->pos().x() <= enemy_bullet[j]->pos().x() && player->pos().x()+91 >= enemy_bullet[j]->pos().x())
-    {
-        if(player->pos().y()+925 <= enemy_bullet[j]->pos().y() && player->pos().y()+1050 >= enemy_bullet[j]->pos().y())
-        {
-            gameLose();
-        }
-    }
-    j++;
-    if(j==8) j = 0;*/
 }
 
 void MainWindow::enemybulletCollision()
 {
     for(int i=0;i<8;i++)
     {
-        cout << player->pos().x() << " " << player->pos().y() << " " << enemy_bullet[i]->pos().x()<< " " << enemy_bullet[i]->pos().y() << endl;
-        if(player->pos().x() <= enemy_bullet[i]->pos().x() && player->pos().x()+91 >= enemy_bullet[i]->pos().x())
+        if(player->pos().x() < enemy_bullet[i]->pos().x() && player->pos().x()+91 > enemy_bullet[i]->pos().x())
         {
             if(player->pos().y() <= enemy_bullet[i]->pos().y() && player->pos().y()+125 >= enemy_bullet[i]->pos().y())
             {
@@ -223,8 +231,11 @@ void MainWindow::gameRedy()
 void MainWindow::gameLose()
 {
     gamemod=lose;
+    bgm->stop();
     timetimer->stop();
+    doomTimer->stop();
     playerTimer->stop();
+    bulletTimer->stop();
     enemyTimer->stop();
     enemybulletTimer->stop();
     DeathTheme->play();
@@ -235,16 +246,38 @@ void MainWindow::gameStart()
     playerTimer->start(timedata);
     enemyTimer->start(50);
     enemybulletTimer->start(2);
-    //bgm->play();
+    bgm->play();
+
+
     time = new Number(this);
     timetimer = new QTimer(this);
     connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
     connect(timetimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
     timetimer->start(1000);
+
+    doom = new Doomed(this);
+    doomTimer = new QTimer(this);
+    connect(doomTimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
+}
+
+void MainWindow::gameVictory()
+{
+    gamemod=victory;
+    bgm->stop();
+    timetimer->stop();
+    playerTimer->stop();
+    enemyTimer->stop();
+    enemybulletTimer->stop();
+    VictoryTheme->play();
 }
 
 void MainWindow::countdown()
 {
-    time->TimeLimit--;
-    //enemyShoot();
+    for(int i=0;i<8;i++) enemy_bullet[i]->setVisible(true);
+    if(time->TimeLimit>0) time->TimeLimit--;
+    else
+    {
+        timetimer->stop();
+        doomTimer->start(200);
+    }
 }

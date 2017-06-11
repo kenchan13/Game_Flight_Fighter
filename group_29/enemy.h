@@ -13,14 +13,14 @@ class Enemy : public QWidget
 public:
     explicit Enemy(QWidget *parent = 0);
     ~Enemy();
-
+    int HP = 420;
+    QPixmap pix;
 protected:
     void paintEvent(QPaintEvent *);
 
 private:
     QTimer *enemyTimer;
     QString enemyImg;
-
 };
 
 #endif // ENEMY_H

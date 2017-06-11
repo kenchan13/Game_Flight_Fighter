@@ -9,6 +9,7 @@
 #include <enemy.h>
 #include <enemybullet.h>
 #include <number.h>
+#include <doomed.h>
 #include "easymusic.h"
 
 class MainWindow : public QMainWindow
@@ -29,6 +30,7 @@ private slots:
     void enemybulletAction();
     void enemybulletCollision();
     void mybulletAction();
+    void mybulletHit();
     void countdown();
 private:
 
@@ -38,13 +40,14 @@ private:
     void gameLose();			 //遊戲結束
     void gameStart();			 //遊戲開始
     void gameRedy();             //遊戲預備
+    void gameVictory();
     void moving(char);
     void myshoot();
 
     ROLE *player;			// 建立一隻角色 - 鳥
     QTimer *playerTimer;
     double timedata;			// playerTimer interval
-    enum{lose=0,start=1,redy=2};  // Enum三個參數, 代表遊戲狀態
+    enum{lose=0,start=1,redy=2,victory=3};  // Enum三個參數, 代表遊戲狀態
     int gamemod;		//目前遊戲狀態, 0=lose, 1=start, 2=redy
     // 遊戲狀態預設流程： redy -> start -> lose -> redy -> start .... 不斷循環
 
@@ -68,6 +71,9 @@ private:
 
     Number *time;
     QTimer *timetimer;
+
+    Doomed *doom;
+    QTimer *doomTimer;
 };
 
 #endif // MAINWINDOW_H

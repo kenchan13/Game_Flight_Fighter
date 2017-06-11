@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     mybullet.cpp \
     enemy.cpp \
     enemybullet.cpp \
-    number.cpp
+    number.cpp \
+    doomed.cpp
 
 HEADERS  += mainwindow.h \
     role.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     mybullet.h \
     enemy.h \
     enemybullet.h \
-    number.h
+    number.h \
+    doomed.h
 
 RESOURCES += \
     resource.qrc
