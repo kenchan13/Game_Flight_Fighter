@@ -12,7 +12,7 @@ using namespace std;
 
 int i = 0;
 int j = 0;
-
+int gameListStatus = 0;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -21,34 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setFixedSize(win_width,win_height);	//視窗大小
     this->setWindowIcon(QIcon(":/Image/player1.png"));
     this->setWindowTitle("Fight Flighter");
-
-
-    //create player
-//    player=new ROLE(this);
-//    playerTimer = new QTimer(this);
-//    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
-//    playerTimer->start(50);
-
-    //create enemy
-//    enemy=new Enemy(this);
-//    enemyTimer = new QTimer(this);
-//    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
-//    enemyTimer->start(50);
-
-
-    //create my bullet
-//    int i;
-//    for(i=0;i<24;i++) bullet[i]=new mybullet(this);
-//    bulletTimer = new QTimer(this);
-//    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
-//    bulletTimer->start(2);
-
-    //create enemy bullet
-//    int j;
-//    for(j=0;j<24;j++) enemy_bullet[j]=new enemybullet(this);
-//    enemybulletTimer = new QTimer(this);
-//    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
-//    enemybulletTimer->start(2);
 
     //Music
     bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
@@ -59,8 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //遊戲初始模式
     gameRedy();
-
-
 
     //遊戲開始
     gameStart();
@@ -73,8 +43,28 @@ void MainWindow::paintEvent(QPaintEvent *)		//繪圖事件, 用来產生背景
     QPainter painter(this);
     QPixmap bgImg;
     bgImg.load(":/Image/background.gif");
-
     painter.drawPixmap(0, 0, 760, 900, bgImg);
+
+
+    if (gameListStatus == 0) {
+        QPainter painter(this);
+        QPixmap bgImg;
+        bgImg.load(":/Image/background.gif");
+        painter.drawPixmap(0, 0, 760, 900, bgImg);
+
+        QPixmap start, start_selected, exit, exit_selected, score, score_selected;
+        start.load(":/Image/start_selected.png");
+        start_selected.load(":/Image/start_selected.png");
+        exit.load(":/Image/exit_selected.png");
+        exit_selected.load(":/Image/exit_selected.png");
+        score.load(":/Image/score_selected.png");
+        score_selected.load(":/Image/score_selected.png");
+
+        painter.drawPixmap(100, 300, 400, 100, start);
+        painter.drawPixmap(100, 400, 400, 100, score);
+        painter.drawPixmap(100, 500, 400, 100, exit);
+    }
+
 }
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -105,43 +95,64 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     // 在這裡設定按下滑鼠要觸發的功能
+    if (gameListStatus == 0) { //Game List Mouse Action
+        if (event->button() == Qt::LeftButton) {
+            auto startPoint = event->pos();
+            if (100 <= startPoint.rx() && startPoint.rx() <= 500) { //Start
+                if (300 <= startPoint.ry() && startPoint.ry() < 400) {
+                    gameListStatus = 1;
+                    //this->repaint();
+                    gameRedy();
+                    gameStart();
+//                    this->repaint();
+                    cout << "start" << endl;
+                } else if (400 <= startPoint.ry() && startPoint.ry() < 500) { //Score
+                    cout << "score" << endl;
+                    gameListStatus = 2;
+                } else if (500 <= startPoint.ry() && startPoint.ry() < 600) { //Exit
+                    cout << "exit" << endl;
+                    gameListStatus = 3;
+                }
+            }
+        }
+    }
 }
 
 
 void MainWindow::createPlayer(){
-
+    //this->repaint();
     player=new ROLE(this);
     playerTimer = new QTimer(this);
-    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
-    playerTimer->start(50);
+    //connect(playerTimer, SIGNAL(timeout()), this, SLOT());
+//    playerTimer->start(50);
 
     player->move(0,0);
     playerTimer=new QTimer(this);
-    connect(playerTimer,SIGNAL(timeout()),this,SLOT());
-    timedata=8;
+//    connect(playerTimer,SIGNAL(timeout()),this,SLOT());
+//    timedata=8;
 }
 
 void MainWindow::createEnemy(){
     enemy=new Enemy(this);
     enemyTimer = new QTimer(this);
-    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
-    enemyTimer->start(50);
+//    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
+//    enemyTimer->start(50);
 }
 
 void MainWindow::createMyBullet(){
     int i;
     for(i=0;i<24;i++) bullet[i]=new mybullet(this);
     bulletTimer = new QTimer(this);
-    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
-    bulletTimer->start(2);
+//    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
+//    bulletTimer->start(2);
 }
 
 void MainWindow::createEnemyBullet(){
     int j;
     for(j=0;j<24;j++) enemy_bullet[j]=new enemybullet(this);
     enemybulletTimer = new QTimer(this);
-    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
-    enemybulletTimer->start(2);
+//    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
+//    enemybulletTimer->start(2);
 }
 
 void MainWindow::moving(char cmd)
@@ -202,6 +213,7 @@ void MainWindow::enemybulletAction()
 
 void MainWindow::gameRedy()
 {
+    cout << "gameRedy-----------------------" << endl;
     gamemod=redy;
     createPlayer();
     createEnemy();
@@ -218,6 +230,7 @@ void MainWindow::gameLose()
 
 void MainWindow::gameStart()
 {
+    cout << "gameStart" << cout;
     gamemod=start;
     playerTimer->start(timedata);
     //bgm->play();
@@ -225,6 +238,15 @@ void MainWindow::gameStart()
     timetimer = new QTimer(this);
     connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
     timetimer->start(1000);
+    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
+    playerTimer->start(50);
+    timedata=8;
+    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
+    enemyTimer->start(50);
+    connect(bulletTimer, SIGNAL(timeout()), this, SLOT(mybulletAction()));
+    bulletTimer->start(2);
+    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
+    enemybulletTimer->start(2);
 }
 
 void MainWindow::countdown()

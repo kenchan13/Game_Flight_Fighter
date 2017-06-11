@@ -15,5 +15,8 @@
         <file>Image/Number/7.png</file>
         <file>Image/Number/8.png</file>
         <file>Image/Number/9.png</file>
+        <file>Image/exit_selected.png</file>
+        <file>Image/score_selected.png</file>
+        <file>Image/start_selected.png</file>
     </qresource>
 </RCC>
