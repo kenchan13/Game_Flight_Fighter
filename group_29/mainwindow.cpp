@@ -17,21 +17,14 @@ MainWindow::MainWindow(QWidget *parent)
     win_width = 760;
     win_height = 900;
     this->setFixedSize(win_width,win_height);	//視窗大小
-    this->setWindowIcon(QIcon(":/Image/player1.png"));
+    this->setWindowIcon(QIcon(":/Image/Kappa.png"));
     this->setWindowTitle("Fight Flighter");
-
 
     //create player
     player=new ROLE(this);
-    /*playerTimer = new QTimer(this);
-    connect(playerTimer, SIGNAL(timeout()), this, SLOT());
-    playerTimer->start(50);*/
 
     //create enemy
     enemy=new Enemy(this);
-    /*enemyTimer = new QTimer(this);
-    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyAction()));
-    enemyTimer->start(50);*/
 
     //create my bullet
     for(int i=0;i<24;i++) bullet[i]=new mybullet(this);
@@ -46,9 +39,6 @@ MainWindow::MainWindow(QWidget *parent)
         enemy_bullet[j]=new enemybullet(this);
         enemy_bullet[j]->setVisible(false);
     }
-    /*enemybulletTimer = new QTimer(this);
-    connect(enemybulletTimer, SIGNAL(timeout()), this, SLOT(enemybulletAction()));
-    enemybulletTimer->start(2);*/
 
     //Music
     bgm =new easyMusic("musicFile/bg_music.mp3",80,1);
@@ -56,6 +46,18 @@ MainWindow::MainWindow(QWidget *parent)
     hit_music = new easyMusic("musicFile/sfx_hit.wav",100,0);
     DeathTheme = new easyMusic("musicFile/DeathTheme.mp3",100,1);
     VictoryTheme = new easyMusic("musicFile/VictoryTheme.mp3",100,0);
+
+    time = new Number(this);
+    timetimer = new QTimer(this);
+    connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
+    connect(timetimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
+
+    doom = new Doomed(this);
+    doomTimer = new QTimer(this);
+    connect(doomTimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
+
+
+    createBackground();
 
     //遊戲初始模式
     gameRedy();
@@ -112,7 +114,7 @@ void MainWindow::createPlayer(){
 
     player->move(320,750);
     playerTimer=new QTimer(this);
-    connect(playerTimer,SIGNAL(timeout()),this,SLOT());
+    //connect(playerTimer,SIGNAL(timeout()),this,SLOT());
     timedata=8;
 }
 
@@ -160,13 +162,7 @@ void MainWindow::myshoot()
 
 void MainWindow::mybulletAction()
 {
-    /*bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-40);
-    i++;
-    if(i==24) i = 0;*/
-    for(int i=0;i<24;i++)
-    {
-        if(bullet[i]->pos().y()>-100) bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-2);
-    }
+    for(int i=0;i<24;i++) if(bullet[i]->pos().y()>-100) bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-2);
 }
 
 void MainWindow::mybulletHit()
@@ -246,18 +242,8 @@ void MainWindow::gameStart()
     playerTimer->start(timedata);
     enemyTimer->start(50);
     enemybulletTimer->start(2);
-    bgm->play();
-
-
-    time = new Number(this);
-    timetimer = new QTimer(this);
-    connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
-    connect(timetimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
     timetimer->start(1000);
-
-    doom = new Doomed(this);
-    doomTimer = new QTimer(this);
-    connect(doomTimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
+    bgm->play();
 }
 
 void MainWindow::gameVictory()
@@ -280,4 +266,42 @@ void MainWindow::countdown()
         timetimer->stop();
         doomTimer->start(200);
     }
+}
+
+void MainWindow::createBackground()
+
+{
+
+    movie = new QMovie(":/Image/start.gif");
+    label = new QLabel(this);
+
+    label->setGeometry(0,0,760,900);
+    label->setMovie(movie);
+
+    movie->start();
+
+    movieTimer = new QTimer(this);
+    connect(movieTimer, SIGNAL(timeout()), this, SLOT(moviestop()));
+    movieTimer->start(6000);
+}
+
+void MainWindow::moviestop()
+{
+    movie->stop();
+    label->setVisible(false);
+
+}
+void MainWindow::fighterAction()
+{
+    /*int step_lenghth=55;
+
+    if(i<=step_lenghth*4)
+    {
+        fighters->move(i,220);
+        i=i+step_lenghth;
+    }
+    else
+    {
+        i=0;
+    }*/
 }

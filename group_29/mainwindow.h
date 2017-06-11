@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QApplication>
 #include <QMouseEvent>
+#include <QLabel>
 #include <role.h>
 #include <mybullet.h>
 #include <enemy.h>
@@ -32,6 +33,7 @@ private slots:
     void mybulletAction();
     void mybulletHit();
     void countdown();
+    void moviestop();
 private:
 
     void createPlayer();          // 產生角色
@@ -43,6 +45,9 @@ private:
     void gameVictory();
     void moving(char);
     void myshoot();
+
+    void createBackground();
+    void fighterAction();
 
     ROLE *player;			// 建立一隻角色 - 鳥
     QTimer *playerTimer;
@@ -74,6 +79,10 @@ private:
 
     Doomed *doom;
     QTimer *doomTimer;
+
+    QMovie* movie;
+    QTimer *movieTimer;
+    QLabel* label;
 };
 
 #endif // MAINWINDOW_H
