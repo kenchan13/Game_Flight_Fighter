@@ -34,6 +34,7 @@ HEADERS  += mainwindow.h \
     doomed.h
 
 RESOURCES += \
-    resource.qrc
+    resource.qrc \
+    resource_gif.qrc
 
 DISTFILES +=
