@@ -22,6 +22,6 @@ void ROLE::paintEvent(QPaintEvent *)
     QPixmap pix;
 
     pix.load(roleImg);
-    painter.drawPixmap(320,750,91,125,pix);
+    painter.drawPixmap(0,0,91,125,pix);
 }
 

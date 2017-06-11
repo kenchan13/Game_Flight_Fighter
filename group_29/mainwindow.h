@@ -25,18 +25,21 @@ protected:
 
 private slots:
     void enemyAction();
+    void enemyShoot();
     void enemybulletAction();
+    void enemybulletCollision();
     void mybulletAction();
     void countdown();
 private:
 
     void createPlayer();          // 產生角色
+    void createEnemy();
+    void createEnemyBullet();
     void gameLose();			 //遊戲結束
     void gameStart();			 //遊戲開始
     void gameRedy();             //遊戲預備
     void moving(char);
     void myshoot();
-    void enemyShoot();
 
     ROLE *player;			// 建立一隻角色 - 鳥
     QTimer *playerTimer;
@@ -60,7 +63,7 @@ private:
     Enemy *enemy;
     QTimer *enemyTimer;
 
-    enemybullet *enemy_bullet[24];
+    enemybullet *enemy_bullet[8];
     QTimer *enemybulletTimer;
 
     Number *time;

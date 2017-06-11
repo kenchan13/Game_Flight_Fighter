@@ -6,7 +6,7 @@
 
 enemybullet::enemybullet(QWidget *parent) : QWidget(parent)
 {
-    this->setFixedSize(800,900);
+    this->setFixedSize(760,900);
     bulletImg=":/Image/bullet.png";
     bulletTimer = new QTimer(this);
 
@@ -22,5 +22,5 @@ void enemybullet::paintEvent(QPaintEvent *)
     QPixmap pix;
 
     pix.load(bulletImg);
-    painter.drawPixmap(760,0,25,25,pix);
+    painter.drawPixmap(0,0,25,25,pix);
 }
