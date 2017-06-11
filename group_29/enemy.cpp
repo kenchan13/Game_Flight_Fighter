@@ -12,6 +12,7 @@ Enemy::Enemy(QWidget *parent) : QWidget(parent)
 
     connect(enemyTimer, SIGNAL(timeout()), this, SLOT(update()));
     enemyTimer->start(1000);
+
 }
 
 Enemy::~Enemy() {}
