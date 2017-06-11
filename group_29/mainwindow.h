@@ -33,7 +33,7 @@ private slots:
     void mybulletAction();
     void mybulletHit();
     void countdown();
-    void moviestop();
+    void bgmoviestop();
 private:
 
     void createPlayer();          // 產生角色
@@ -48,6 +48,7 @@ private:
 
     void createBackground();
     void fighterAction();
+    void createLoseMovie();
 
     ROLE *player;			// 建立一隻角色 - 鳥
     QTimer *playerTimer;
@@ -80,9 +81,13 @@ private:
     Doomed *doom;
     QTimer *doomTimer;
 
-    QMovie* movie;
-    QTimer *movieTimer;
-    QLabel* label;
+    QMovie* bgmovie;
+    QTimer *bgmovieTimer;
+    QLabel* bglabel;
+
+    QMovie* losemovie;
+    QLabel* loselabel;
+
 };
 
 #endif // MAINWINDOW_H

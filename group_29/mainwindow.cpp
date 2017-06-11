@@ -57,7 +57,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(doomTimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
 
 
-    createBackground();
+    //createBackground();
+    createLoseMovie();
+    loselabel->setVisible(false);
 
     //遊戲初始模式
     gameRedy();
@@ -227,6 +229,7 @@ void MainWindow::gameRedy()
 void MainWindow::gameLose()
 {
     gamemod=lose;
+    loselabel->setVisible(true);
     bgm->stop();
     timetimer->stop();
     doomTimer->stop();
@@ -272,25 +275,40 @@ void MainWindow::createBackground()
 
 {
 
-    movie = new QMovie(":/Image/start.gif");
-    label = new QLabel(this);
+    bgmovie = new QMovie(":/Image/start.gif");
+    bglabel = new QLabel(this);
 
-    label->setGeometry(0,0,760,900);
-    label->setMovie(movie);
+    bglabel->setGeometry(0,0,760,900);
+    bglabel->setMovie(bgmovie);
 
-    movie->start();
+    bgmovie->start();
 
-    movieTimer = new QTimer(this);
-    connect(movieTimer, SIGNAL(timeout()), this, SLOT(moviestop()));
-    movieTimer->start(6000);
+    bgmovieTimer = new QTimer(this);
+    connect(bgmovieTimer, SIGNAL(timeout()), this, SLOT(bgmoviestop()));
+    bgmovieTimer->start(6000);
 }
 
-void MainWindow::moviestop()
+void MainWindow::bgmoviestop()
 {
-    movie->stop();
-    label->setVisible(false);
+    bgmovie->stop();
+    bglabel->setVisible(false);
 
 }
+
+void MainWindow::createLoseMovie()
+
+{
+
+    losemovie = new QMovie(":/Image/gameover.gif");
+    loselabel = new QLabel(this);
+
+    loselabel->setGeometry(0,0,760,900);
+    loselabel->setMovie(losemovie);
+
+    losemovie->start();
+}
+
+
 void MainWindow::fighterAction()
 {
     /*int step_lenghth=55;
