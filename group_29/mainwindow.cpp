@@ -53,17 +53,22 @@ void MainWindow::gameInit()
         enemy_bullet[j]=new enemybullet(this);
         enemy_bullet[j]->setVisible(false);
     }
+    //Add time limit
     time = new Number(this);
     timetimer = new QTimer(this);
+    time->setVisible(true);
     connect(timetimer, SIGNAL(timeout()), this, SLOT(countdown()));
     connect(timetimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
 
+    //Time limit exceed
     doom = new Doomed(this);
     doomTimer = new QTimer(this);
     connect(doomTimer, SIGNAL(timeout()), this, SLOT(enemyShoot()));
 
     createLoseMovie();
     loselabel->setVisible(false);
+    createVictoryMovie();
+    viclabel->setVisible(false);
 
     //遊戲初始模式
     gameRedy();
@@ -88,7 +93,7 @@ void MainWindow::paintEvent(QPaintEvent *)		//繪圖事件, 用来產生背景
         score.load(":/Image/score_selected.png");
 
         painter.drawPixmap(100, 300, 400, 100, start);
-        painter.drawPixmap(100, 400, 400, 100, score);
+
         painter.drawPixmap(100, 500, 400, 100, exit);
 }
 
@@ -130,9 +135,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                     gameListStatus = 1;
                     cout << "start" << endl;
                     gameInit();
-                } else if (400 <= startPoint.ry() && startPoint.ry() < 500) { //Score
-                    cout << "score" << endl;
-                    gameListStatus = 2;
                 } else if (500 <= startPoint.ry() && startPoint.ry() < 600) { //Exit
                     cout << "exit" << endl;
                     gameListStatus = 3;
@@ -211,7 +213,7 @@ void MainWindow::mybulletHit()
                 bullet[i]->setVisible(false);
                 bullet[i]->move(bullet[i]->pos().x(),bullet[i]->pos().y()-160);
                 enemy->HP--;
-                if(enemy->HP==0) gameVictory();
+                if(enemy->HP<=0) gameVictory();
             }
         }
     }
@@ -241,7 +243,7 @@ void MainWindow::enemybulletCollision()
 {
     for(int i=0;i<8;i++)
     {
-        if(player->pos().x() < enemy_bullet[i]->pos().x() && player->pos().x()+91 > enemy_bullet[i]->pos().x())
+        if(player->pos().x() < enemy_bullet[i]->pos().x()+25 && player->pos().x()+91 > enemy_bullet[i]->pos().x())
         {
             if(player->pos().y() <= enemy_bullet[i]->pos().y() && player->pos().y()+125 >= enemy_bullet[i]->pos().y())
             {
@@ -286,6 +288,7 @@ void MainWindow::gameStart()
 void MainWindow::gameVictory()
 {
     gamemod=victory;
+    viclabel->setVisible(true);
     bgm->stop();
     timetimer->stop();
     playerTimer->stop();
@@ -293,6 +296,20 @@ void MainWindow::gameVictory()
     enemybulletTimer->stop();
     VictoryTheme->play();
 }
+
+
+void MainWindow::createVictoryMovie()
+{
+
+    vicmovie = new QMovie(":/Image/win.gif");
+    viclabel = new QLabel(this);
+
+    viclabel->setGeometry(0,0,760,900);
+    viclabel->setMovie(vicmovie);
+
+    vicmovie->start();
+}
+
 
 void MainWindow::countdown()
 {
@@ -345,15 +362,4 @@ void MainWindow::createLoseMovie()
 
 void MainWindow::fighterAction()
 {
-    /*int step_lenghth=55;
-
-    if(i<=step_lenghth*4)
-    {
-        fighters->move(i,220);
-        i=i+step_lenghth;
-    }
-    else
-    {
-        i=0;
-    }*/
 }

@@ -51,6 +51,7 @@ private:
     void openingMovie();
     void fighterAction();
     void createLoseMovie();
+    void createVictoryMovie();
 
     ROLE *player;			// 建立一隻角色 - 鳥
     QTimer *playerTimer;
@@ -89,6 +90,9 @@ private:
 
     QMovie* losemovie;
     QLabel* loselabel;
+
+    QMovie* vicmovie;
+    QLabel* viclabel;
 
 };
 
